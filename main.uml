@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>oop.ex6.main</OriginalElement>
+  <nodes>
+    <node x="0.0" y="310.0">oop.ex6.main.Sjavac</node>
+    <node x="106.0" y="213.5">oop.ex6.main.scopes.Method</node>
+    <node x="216.0" y="191.0">oop.ex6.main.scopes.MainScope</node>
+    <node x="174.0" y="299.0">oop.ex6.main.SjavaToStringArr</node>
+    <node x="9.0" y="213.5">oop.ex6.main.scopes.Block</node>
+    <node x="-209.5" y="369.0">oop.ex6.main.scopes.MethodsFactory</node>
+    <node x="143.0" y="373.0">oop.ex6.main.buildingUnits.Variable</node>
+    <node x="0.0" y="0.0">oop.ex6.main.scopes.Scope</node>
+    <node x="419.5" y="314.5">oop.ex6.main.buildingUnits.Line</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="oop.ex6.main.scopes.MainScope" target="oop.ex6.main.scopes.Scope">
+      <point x="0.0" y="-37.0" />
+      <point x="337.5" y="166.0" />
+      <point x="251.66666666666669" y="166.0" />
+      <point x="100.66666666666669" y="70.5" />
+    </edge>
+    <edge source="oop.ex6.main.scopes.Block" target="oop.ex6.main.scopes.Scope">
+      <point x="0.0" y="-14.5" />
+      <point x="47.5" y="166.0" />
+      <point x="50.33333333333333" y="166.0" />
+      <point x="-100.66666666666667" y="70.5" />
+    </edge>
+    <edge source="oop.ex6.main.scopes.Method" target="oop.ex6.main.scopes.Scope">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="70.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="148.5" y="219.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
