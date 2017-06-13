@@ -11,4 +11,7 @@ public class MainScope extends Scope {
     public ArrayList<Method> getMethods() {
         return null;
     }
+
+    public void addMethod(Method method) {
+    }
 }

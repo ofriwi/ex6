@@ -39,4 +39,7 @@ public abstract class Scope implements Iterator<Line> {
     public Line next() {
         return null;
     }
+
+    public void addVariable(Variable variable) {
+    }
 }
