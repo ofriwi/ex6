@@ -1,5 +1,7 @@
 package oop.ex6.main.buildingUnits;
 
+import oop.ex6.main.scopes.Scope;
+
 /**
  * Created by t8307673 on 11/06/2017.
  */
