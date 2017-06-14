@@ -8,7 +8,8 @@ import oop.ex6.main.scopes.Scope;
 public class Line {
     private Scope parent;
 
-    public Line(String line) {
+    public Line(String line, Scope parent) {
+        this.parent = parent;
     }
 
     private void validate() throws CodeException {
