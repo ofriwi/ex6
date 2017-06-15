@@ -17,6 +17,7 @@ public abstract class Scope {
     private Scope parent;
     private String[] lines;
     private int lineCounter;
+    private int openScopes;
 
     /**
      * Constructor
@@ -28,6 +29,7 @@ public abstract class Scope {
         this.parent = parent;
         this.lines = lines;
         lineCounter = 0;
+        openScopes=0;
     }
 
     /**
@@ -36,6 +38,15 @@ public abstract class Scope {
      */
     public Map<String, Variable> getVariables() {
         return mergeVariables(parent.getVariables(), variables);
+    }
+    
+    public int getOpenedScopes()
+    {
+    	return this.openScopes;
+    }
+    public void setOpenedScopes(int num)
+    {
+    	this.openScopes=num;
     }
 
     /*
@@ -73,8 +84,8 @@ public abstract class Scope {
      * @throws CodeException if one of the lines throws an error
      */
     public void excecute() throws  CodeException{
-        for (String lineText : lines){
-            Line line = new Line(lineText);
+        for (int i=1; i<=this.lines.length; i++){
+            Line line = new Line(lines[i],this,i);
         }
     }
 
