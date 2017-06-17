@@ -18,7 +18,15 @@ public class Variable {
 
     private String type;
     private String name;
+    private boolean isFinal;
 
+    public Variable(String name, String type, boolean isFinal)
+    {
+    	this.type=type;
+    	this.name=name;
+    	this.isFinal=isFinal;
+    }
+    
     /**
      * Getter
      * @return type
@@ -33,5 +41,10 @@ public class Variable {
      */
     public String getName() {
         return name;
+    }
+    
+    public boolean isFinal()
+    {
+    	return this.isFinal;
     }
 }

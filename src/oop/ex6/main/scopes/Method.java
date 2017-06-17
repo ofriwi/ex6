@@ -1,5 +1,7 @@
 package oop.ex6.main.scopes;
 
+import oop.ex6.main.buildingUnits.Variable;
+
 /**
  * Created by Ofri Wienner on 11/06/2017.
  * Method is the scope of one method in the file.
@@ -7,6 +9,7 @@ package oop.ex6.main.scopes;
 public class Method extends Scope {
 
     private String name;
+    private Variable[] input;
 
     /**
      * Constructor
@@ -14,9 +17,10 @@ public class Method extends Scope {
      * @param parent the MainScope
      * @param name methods's name
      */
-    public Method(String[] lines, Scope parent, String name) {
+    public Method(String[] lines, Scope parent, String name, Variable[] input) {
         super(lines, parent);
         this.name = name;
+        this.input=input;
     }
 
     /**
@@ -25,6 +29,11 @@ public class Method extends Scope {
      */
     public String getName() {
         return name;
+    }
+    
+    public Variable[] getinput()
+    {
+    	return this.input;
     }
 
 }

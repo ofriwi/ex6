@@ -49,7 +49,7 @@ public abstract class Scope {
     	this.openScopes=num;
     }
 
-    /*
+    /**
     Merge a list of variables from parent with self variables
      */
     private Map<String, Variable> mergeVariables(Map<String, Variable> parentVariables,
@@ -78,6 +78,21 @@ public abstract class Scope {
     public boolean isContainVariable(String name){
         return variables.keySet().contains(name);
     }
+    
+    /**
+     * returns a variable with given name
+     * @param name the Variable's name
+     * @return the variable
+     * @throws CodeException if the given name is a non-existing variable's name
+     */
+    public Variable getVariable(String name) throws CodeException
+    {
+    	if (!isContainVariable(name))
+    	{
+    		throw new CodeException("attemption to access non-existing variable");
+    	}
+    	return variables.get(name);
+    }
 
     /**
      * Run the method
@@ -95,5 +110,14 @@ public abstract class Scope {
      */
     public void addVariable(Variable variable) {
         variables.put(variable.getName(), variable);
+    }
+    
+    public MainScope getMainScope()
+    {
+    	if (this.parent==null)
+    	{
+    		return (MainScope)this;
+    	}
+    	return this.parent.getMainScope();
     }
 }
