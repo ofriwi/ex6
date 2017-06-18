@@ -3,6 +3,7 @@ package oop.ex6.main.scopes;
 import oop.ex6.main.buildingUnits.CodeException;
 import oop.ex6.main.buildingUnits.Variable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,11 +15,10 @@ public class MainScope extends Scope {
 
     /**
      * Constructor
-     * @param methods program's methods
      */
-    public MainScope(Map<String, Method> methods) {
+    public MainScope() {
         super(null);
-        this.methods = methods;
+        methods = new HashMap<>();
     }
 
     /**

@@ -1,0 +1,65 @@
+    OLD GLOBALS FACTORY
+
+    /**
+         * Constructor
+         * @param mainScope pointer to the main scope (the factory will add the variables and methods to the
+         *                  MainScope).
+         */
+        public GlobalsFactory(Scope mainScope) {
+            variableDeceleration = Pattern.compile("^("+Variable.allVariables()+")");
+            this.mainScope = mainScope;
+        }
+
+        /**
+         * Create all global variables
+         * @param stringArray MainScope's lines
+         * @return Map of variables
+         */
+        public Map<String, Variable> createVariables(String[] stringArray){
+            for (String stringLine : stringArray){
+                Matcher match = variableDeceleration.matcher(stringLine);
+                if(match.find()){
+                    new Line(stringLine, mainScope);
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Create all methods
+         * @param allLines MainScope's lines
+         * @return Map of methods
+         */
+        public Map<String, Method> createMethods(String[] allLines, MainScope mainScope) {
+            Map<String, Method> methods = new HashMap<>();
+            for (String lineText : allLines) {
+
+                Method method = new Method(methodLines, mainScope, allLines[startLine]);
+                methods.put(method.getName(), method);
+            }
+            return methods;
+        }
+
+
+
+
+
+    CREATE METHODS in GLOBALSFACTORY
+
+    /**
+     * Create all methods
+     * @param allLines MainScope's lines
+     * @return Map of methods
+     */
+    public Map<String, Method> createMethods(String[] allLines, MainScope mainScope) {
+        Map<String, Method> methods = new HashMap<>();
+        int[][] methodsLinesNum = mainScope.findMethods();
+        for (int i = 0; i < methodsLinesNum.length; i++) {
+            int startLine = methodsLinesNum[i][0];
+            int endLine = methodsLinesNum[i][1];
+            String[] methodLines = Arrays.copyOfRange(allLines, startLine + 1, endLine - 1);
+            Method method = new Method(methodLines, mainScope, allLines[startLine]);
+            methods.put(method.getName(), method);
+        }
+        return methods;
+    }
