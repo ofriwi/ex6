@@ -37,17 +37,8 @@ public class MainScope extends Scope {
         methods.put(method.getName(), method);
     }
 
-    /**
-     * Find all the methods in the MainScope.
-     * @return an array containing the lines of the beginning and the end of the function.
-     * The array structure is: methodsLines[n, 0] is the line of method #n's deceleration,
-     * and methodLines[n, 1] is line of method #n's end ('}').
-     */
-    public int[][] findMethods() {
-        return null;
-    }
 
-    public Method getMehtod(String name) throws CodeException {
+    public Method getMethod(String name) throws CodeException {
         Method method = methods.get(name);
         if (method == null) {
             throw new CodeException("");
