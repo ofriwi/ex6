@@ -12,11 +12,10 @@ public class Block extends Scope {
 	
     /**
      * Constructor
-     * @param lines block's lines as strings
      * @param parent block's parent
      */
-    public Block(String[] lines, Scope parent,  Map<Integer, Block> blocks) {
-        super(lines, parent);
+    public Block(Scope parent,  Map<Integer, Block> blocks) {
+        super(parent);
         this.blocks=blocks;
     }
     

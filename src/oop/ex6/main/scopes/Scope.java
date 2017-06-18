@@ -15,17 +15,14 @@ public abstract class Scope {
     Map<String, Variable> variables;
 
     private Scope parent;
-    private String[] lines;
 
     /**
      * Constructor
-     * @param lines scope's lines as strings
      * @param parent scope's parent
      */
-    public Scope(String[] lines, Scope parent) {
+    public Scope(Scope parent) {
         this.variables = new HashMap<>();
         this.parent = parent;
-        this.lines = lines;
     }
 
     /**

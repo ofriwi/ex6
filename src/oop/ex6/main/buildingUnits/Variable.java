@@ -30,23 +30,10 @@ public class Variable {
     private String name;
     private boolean isFinal;
 
-    public Variable(String name, String type, boolean isFinal)
-    {
-    	this.type=type;
-    	this.name=name;
-    	this.isFinal=isFinal;
-    }
-    
-    /**
-     * Constructor
-     * @param line initializer line
-     */
-    public Variable(String line) {
-        // TODO: check for validation
-        // TODO: maybe change syntax or API
-        String[] words = line.split(" ");
-        this.type = words[0];
-        this.name = words[1].split(";")[0];
+    public Variable(String name, String type, boolean isFinal) {
+        this.type = type;
+        this.name = name;
+        this.isFinal = isFinal;
     }
 
     /**

@@ -14,12 +14,10 @@ public class MainScope extends Scope {
 
     /**
      * Constructor
-     *
-     * @param lines   program's lines as strings
      * @param methods program's methods
      */
-    public MainScope(String[] lines, Map<String, Method> methods) {
-        super(lines, null);
+    public MainScope(Map<String, Method> methods) {
+        super(null);
         this.methods = methods;
     }
 

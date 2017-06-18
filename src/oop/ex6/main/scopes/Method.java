@@ -1,5 +1,9 @@
 package oop.ex6.main.scopes;
 
+import oop.ex6.main.buildingUnits.Variable;
+
+import java.util.Map;
+
 /**
  * Created by Ofri Wienner on 11/06/2017.
  * Method is the scope of one method in the file.
@@ -10,14 +14,18 @@ public class Method extends Scope {
 
     /**
      * Constructor
-     * @param lines method's lines as strings
      * @param mainScope the MainScope
-     * @param decleration methods's decleration
+     * @param name Method's name
+     * @param variables Method input's variables
      */
-    public Method(String[] lines, Scope mainScope, String decleration) {
-        super(lines, mainScope);
-        // TODO: analyze the decleration
-        // this.name = decleration;
+    public Method(Scope mainScope, String name, Variable[] variables) {
+        super(mainScope);
+        this.name = name;
+        if (variables != null) {
+            for (Variable variable : variables) {
+                this.variables.put(variable.getName(), variable);
+            }
+        }
     }
 
     /**
