@@ -3,6 +3,7 @@ package oop.ex6.main.scopes;
 import oop.ex6.main.buildingUnits.CodeException;
 import oop.ex6.main.buildingUnits.Line;
 import oop.ex6.main.buildingUnits.Variable;
+import sun.applet.Main;
 
 import java.util.*;
 
@@ -66,15 +67,15 @@ public abstract class Scope {
         return variables.keySet().contains(name);
     }
 
-    /**
+    /* DEBUG TODO REMOVE
      * Run the method
      * @throws CodeException if one of the lines throws an error
-     */
+     /
     public void excecute() throws  CodeException{
         for (String lineText : lines){
             Line line = new Line(lineText);
         }
-    }
+    }  */
 
     /**
      * Add a variable
@@ -82,5 +83,31 @@ public abstract class Scope {
      */
     public void addVariable(Variable variable) {
         variables.put(variable.getName(), variable);
+    }
+
+    /**
+     * Get the main scope
+     * @return MainScope object
+     */
+    public MainScope getMainScope(){
+        Scope scope = this;
+        while(scope.parent != null)
+            scope = scope.parent;
+        return (MainScope)(scope);
+    }
+
+    /**
+     * Return a variable with certain name
+     * @param name Variable's name
+     * @return Variable object
+     * @throws CodeException if variable doesn't exists
+     */
+    public Variable getVariable(String name) throws CodeException{
+        Variable variable = getVariables().get(name);
+        if (variable == null) {
+            throw new CodeException("");
+        }else {
+            return variable;
+        }
     }
 }

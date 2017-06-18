@@ -10,7 +10,6 @@ public class MainScope extends Scope {
     private Map<String, Method> methods;
 
     /**
-     * /**
      * Constructor
      *
      * @param lines   program's lines as strings
