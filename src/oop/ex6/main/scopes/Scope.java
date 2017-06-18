@@ -3,7 +3,6 @@ package oop.ex6.main.scopes;
 import oop.ex6.main.buildingUnits.CodeException;
 import oop.ex6.main.buildingUnits.Line;
 import oop.ex6.main.buildingUnits.Variable;
-import sun.applet.Main;
 
 import java.util.*;
 

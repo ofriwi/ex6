@@ -1,5 +1,8 @@
 package oop.ex6.main.scopes;
 
+import oop.ex6.main.buildingUnits.CodeException;
+import oop.ex6.main.buildingUnits.Variable;
+
 import java.util.Map;
 
 /**
@@ -44,5 +47,14 @@ public class MainScope extends Scope {
      */
     public int[][] findMethods() {
         return null;
+    }
+
+    public Method getMehtod(String name) throws CodeException {
+        Method method = methods.get(name);
+        if (method == null) {
+            throw new CodeException("");
+        }else {
+            return method;
+        }
     }
 }

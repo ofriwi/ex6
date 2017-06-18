@@ -20,11 +20,6 @@ public class Block extends Scope {
         this.blocks=blocks;
     }
     
-    public void addBlock(Block block)
-    {
-    	this.blocks.put(block.getSubScopeStart(), block);
-    }
-    
     public String getScopeType()
     {
     	return "Block";
