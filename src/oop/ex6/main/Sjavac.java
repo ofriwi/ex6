@@ -20,7 +20,7 @@ public class Sjavac {
      *      2 if an IO exception occurred
      * @param args command line args. args[0] contains the code's path.
      */
-    public void main(String[] args) {
+    public static void main(String[] args) {
         final int LEGAL = 0, ILLEGAL = 1, IOERROR = 2;
         int outputCode = -1;
 
@@ -51,7 +51,7 @@ public class Sjavac {
     /*
     * Validate all lines in the code. Throw an exception if code is invalid.
      */
-    private void validateAllLines(MainScope mainScope) throws CodeException{
+    private static void validateAllLines(MainScope mainScope) throws CodeException{
         while (mainScope.hasNext()){
             new Line(mainScope.next(), mainScope);
         }

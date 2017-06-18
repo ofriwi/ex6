@@ -64,7 +64,7 @@ public class MainScope extends Scope {
      * @return {@code true} if the iteration has more elements
      */
     public boolean hasNext() {
-        return lineCounter <= linesText.length;
+        return lineCounter < linesText.length;
     }
 
     /**
