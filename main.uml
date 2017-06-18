@@ -4,28 +4,27 @@
   <OriginalElement>oop.ex6.main</OriginalElement>
   <nodes>
     <node x="344.492281303602" y="82.33447684391085">oop.ex6.main.Sjavac</node>
-    <node x="114.08333333333333" y="247.0">oop.ex6.main.scopes.Method</node>
-    <node x="224.08333333333334" y="213.0">oop.ex6.main.scopes.MainScope</node>
+    <node x="62.83622016936103" y="286.0454195535027">oop.ex6.main.scopes.Method</node>
+    <node x="357.34795963909437" y="311.6247872423305">oop.ex6.main.scopes.MainScope</node>
     <node x="667.4682675814752" y="0.7735849056604138">oop.ex6.main.SjavaToStringArr</node>
-    <node x="17.083333333333314" y="247.0">oop.ex6.main.scopes.Block</node>
-    <node x="283.0" y="355.0">oop.ex6.main.buildingUnits.Variable</node>
-    <node x="341.4682675814751" y="0.7735849056604138">oop.ex6.main.scopes.MethodsFactory</node>
-    <node x="0.0" y="0.0">oop.ex6.main.scopes.Scope</node>
-    <node x="0.0" y="355.0">oop.ex6.main.buildingUnits.Line</node>
+    <node x="-184.24461123941495" y="301.9076212471132">oop.ex6.main.scopes.Block</node>
+    <node x="623.6980749144676" y="66.48917560281885">oop.ex6.main.buildingUnits.Variable</node>
+    <node x="25.5427700685446" y="367.7726407831859">oop.ex6.main.buildingUnits.Line</node>
+    <node x="-165.57384292178835" y="-79.54457776598176">oop.ex6.main.scopes.Scope</node>
   </nodes>
   <notes />
   <edges>
+    <edge source="oop.ex6.main.scopes.MainScope" target="oop.ex6.main.scopes.Scope">
+      <point x="0.0" y="-48.5" />
+      <point x="338.1836763865066" y="211.9245283018868" />
+      <point x="268.3333333333333" y="188.0" />
+      <point x="107.33333333333331" y="81.5" />
+    </edge>
     <edge source="oop.ex6.main.scopes.Block" target="oop.ex6.main.scopes.Scope">
       <point x="0.0" y="-14.5" />
       <point x="55.583333333333314" y="188.0" />
       <point x="53.666666666666686" y="188.0" />
       <point x="-107.33333333333333" y="81.5" />
-    </edge>
-    <edge source="oop.ex6.main.scopes.MainScope" target="oop.ex6.main.scopes.Scope">
-      <point x="0.0" y="-48.5" />
-      <point x="355.58333333333337" y="188.0" />
-      <point x="268.3333333333333" y="188.0" />
-      <point x="107.33333333333331" y="81.5" />
     </edge>
     <edge source="oop.ex6.main.scopes.Method" target="oop.ex6.main.scopes.Scope">
       <point x="0.0" y="-14.5" />
@@ -34,9 +33,8 @@
       <point x="0.0" y="81.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.919558359621451" x="441.0" y="287.0" />
+  <settings layout="Hierarchic Group" zoom="0.8195583596214511" x="387.0" y="221.00000000000003" />
   <SelectedNodes>
-    <node>oop.ex6.main.buildingUnits.Variable</node>
     <node>oop.ex6.main.buildingUnits.Line</node>
   </SelectedNodes>
   <Categories>

@@ -16,9 +16,6 @@ public abstract class Scope {
 
     private Scope parent;
     private String[] lines;
-    private int lineCounter;
-    private int openScopes;
-    private int subScopeStart;
 
     /**
      * Constructor
@@ -29,9 +26,6 @@ public abstract class Scope {
         this.variables = new HashMap<>();
         this.parent = parent;
         this.lines = lines;
-        lineCounter = 0;
-        openScopes=0;
-        this.subScopeStart=-1;
     }
 
     /**
@@ -41,17 +35,8 @@ public abstract class Scope {
     public Map<String, Variable> getVariables() {
         return mergeVariables(parent.getVariables(), variables);
     }
-    
-    public int getOpenedScopes()
-    {
-    	return this.openScopes;
-    }
-    public void setOpenedScopes(int num)
-    {
-    	this.openScopes=num;
-    }
 
-    /**
+    /*
     Merge a list of variables from parent with self variables
      */
     private Map<String, Variable> mergeVariables(Map<String, Variable> parentVariables,
@@ -80,29 +65,14 @@ public abstract class Scope {
     public boolean isContainVariable(String name){
         return variables.keySet().contains(name);
     }
-    
-    /**
-     * returns a variable with given name
-     * @param name the Variable's name
-     * @return the variable
-     * @throws CodeException if the given name is a non-existing variable's name
-     */
-    public Variable getVariable(String name) throws CodeException
-    {
-    	if (!isContainVariable(name))
-    	{
-    		throw new CodeException("attemption to access non-existing variable");
-    	}
-    	return variables.get(name);
-    }
 
     /**
      * Run the method
      * @throws CodeException if one of the lines throws an error
      */
     public void excecute() throws  CodeException{
-        for (int i=1; i<=this.lines.length; i++){
-            Line line = new Line(lines[i],this,i);
+        for (String lineText : lines){
+            Line line = new Line(lineText);
         }
     }
 
@@ -113,25 +83,4 @@ public abstract class Scope {
     public void addVariable(Variable variable) {
         variables.put(variable.getName(), variable);
     }
-    
-    public MainScope getMainScope()
-    {
-    	if (this.parent==null)
-    	{
-    		return (MainScope)this;
-    	}
-    	return this.parent.getMainScope();
-    }
-    
-    public void setSubScopeStart(int start)
-    {
-    	this.subScopeStart=start;
-    }
-    
-    public int getSubScopeStart()
-    {
-    	return this.subScopeStart;
-    }
-    
-    public abstract String getScopeType();
 }
