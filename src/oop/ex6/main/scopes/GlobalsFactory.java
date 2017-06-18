@@ -22,17 +22,17 @@ public class GlobalsFactory {
     }
 
     public Map<String, Variable> createVariables(String[] stringArray){
-        for (String stringLine : stringArray){
-            Matcher match = variableDecleration.matcher(stringLine);
+        for (int i=0; i<stringArray.length;i++){
+            Matcher match = variableDecleration.matcher(stringArray[i]);
             if(match.find()){
-                Line line = new Line(stringLine, mainScope);
+                Line line = new Line(stringArray[i], mainScope,i);
             }
         }
         return null;
     }
 
-    public ArrayList<Method> toMethods(String[] stringArray) {
-
+    public ArrayList<Method> toMethods(String[] stringArray) 
+    {
         return null;
     }
 }

@@ -18,6 +18,7 @@ public abstract class Scope {
     private String[] lines;
     private int lineCounter;
     private int openScopes;
+    private int subScopeStart;
 
     /**
      * Constructor
@@ -30,6 +31,7 @@ public abstract class Scope {
         this.lines = lines;
         lineCounter = 0;
         openScopes=0;
+        this.subScopeStart=-1;
     }
 
     /**
@@ -120,4 +122,16 @@ public abstract class Scope {
     	}
     	return this.parent.getMainScope();
     }
+    
+    public void setSubScopeStart(int start)
+    {
+    	this.subScopeStart=start;
+    }
+    
+    public int getSubScopeStart()
+    {
+    	return this.subScopeStart;
+    }
+    
+    public abstract String getScopeType();
 }

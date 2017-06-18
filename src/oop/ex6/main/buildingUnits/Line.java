@@ -5,7 +5,10 @@ import java.util.regex.Pattern;
 
 import javax.swing.text.StyledEditorKit.BoldAction;
 
+import oop.ex6.main.scopes.Block;
+import oop.ex6.main.scopes.MainScope;
 import oop.ex6.main.scopes.Scope;
+import oop.ex6.main.scopes.Method;
 
 /**
  * Created by t8307673 on 11/06/2017.
@@ -34,6 +37,8 @@ public class Line {
 				throw new CodeException("line "+this.num+" was"
 						+ " iterperted as block opener but wasn't in the right template");
 			}
+	//		this.parent.setOpenedScopes(this.parent.getOpenedScopes()+1);
+	//		this.parent.setSubScopeStart(this.num);
 			break;
 		case "CLOSE":
 			if (this.parent.getOpenedScopes()<1)
@@ -41,6 +46,9 @@ public class Line {
 				throw new CodeException("line "+this.num+" was interperted as a block closer,"
 						+ " but there were no open blocks");
 			}
+			//create the new scope
+	//		this.parent.setOpenedScopes(this.parent.getOpenedScopes()-1);
+	//		this.parent.setSubScopeStart(-1);
 			break;
 		case "CODELINE":
 			if (!this.validateCodeLine())
@@ -104,31 +112,13 @@ public class Line {
     		String cond = whileMatch.group(1);
     		return isCondition(cond);
     	}
-    	if (methodMatch.matches())
+    	if (methodMatch.matches() && this.parent.getMainScope()==this.parent)
     	{
     		methodMatch.find();
     		String declare = methodMatch.group(2);
     		return isParameterList(declare);
     	}
     	return false;
-    	
-    	
-  //  	String[] opener = this.line.split("\\(|\\)");
-    //	String[] declaration=(" "+opener[0]).split("\\s+");//starts from 1
-    	
-    	
-   /* 	Pattern first = Pattern.compile("[^\\s][^\\s\\(]");
-    	Matcher m = first.matcher(this.line);
-    	m.find();
-    	String firstWord=m.group();
-    	if (!firstWord.equals("if") && !firstWord.equals("while") && !firstWord.equals("void"))
-    	{
-    		return false;
-    	}
-    	if (firstWord.equals("void"))
-    	{
-    		
-    	}*/
     }
     
     private boolean validateCodeLine()
@@ -148,9 +138,9 @@ public class Line {
     	this.parent.addVariable(new Variable(name, type, isFinal));
     }
 
-    private void createScope()
+    private void createMethod(int openLine, int closeLine, String name, Variable[] input)
     {
-    	//כמה דברים לא מוגדרים היטב אז אני עוד לא יכול לכתוב את זה
+    	
     }
     
     private static boolean isValidVarName(String name)

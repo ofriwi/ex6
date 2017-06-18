@@ -43,4 +43,9 @@ public class MainScope extends Scope {
     	}
     	return this.methods.get(name);
     }
+    
+    public String getScopeType()
+    {
+    	return "MainScope";
+    }
 }
