@@ -5,6 +5,7 @@ import oop.ex6.main.buildingUnits.Variable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * Created by Ofri Wienner on 11/06/2017.
@@ -12,13 +13,16 @@ import java.util.Map;
  */
 public class MainScope extends Scope {
     private Map<String, Method> methods;
+    private String[] linesText;
+    private int lineCounter = 0;
 
     /**
      * Constructor
      */
-    public MainScope() {
+    public MainScope(String[] linesText) {
         super(null);
         methods = new HashMap<>();
+        this.linesText = linesText;
     }
 
     /**
@@ -37,7 +41,12 @@ public class MainScope extends Scope {
         methods.put(method.getName(), method);
     }
 
-
+    /**
+     * Get method by name
+     * @param name method's name
+     * @return Method object
+     * @throws CodeException if no such method exists
+     */
     public Method getMethod(String name) throws CodeException {
         Method method = methods.get(name);
         if (method == null) {
@@ -45,5 +54,38 @@ public class MainScope extends Scope {
         }else {
             return method;
         }
+    }
+
+    /**
+     * Returns {@code true} if the iteration has more elements.
+     * (In other words, returns {@code true} if {@link #next} would
+     * return an element rather than throwing an exception.)
+     *
+     * @return {@code true} if the iteration has more elements
+     */
+    public boolean hasNext() {
+        return lineCounter <= linesText.length;
+    }
+
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element in the iteration
+     * @throws NoSuchElementException if the iteration has no more elements
+     * @throws CodeException if the code is invalid
+     */
+    public String next() throws NoSuchElementException, CodeException {
+        if (hasNext())
+            return linesText[lineCounter++];
+        else
+            throw new NoSuchElementException("End of file");
+    }
+
+    /**
+     * Getter
+     * @return number of current line
+     */
+    public int getLineNumber() {
+        return lineCounter + 1;
     }
 }

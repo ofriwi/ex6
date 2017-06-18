@@ -3,12 +3,7 @@ package oop.ex6.main.buildingUnits;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
-import oop.ex6.main.scopes.Block;
-import oop.ex6.main.scopes.MainScope;
 import oop.ex6.main.scopes.Scope;
-import oop.ex6.main.scopes.Method;
 
 /**
  * Created by t8307673 on 11/06/2017.
@@ -16,39 +11,57 @@ import oop.ex6.main.scopes.Method;
 public class Line {
     private Scope parent;
     private String line;
-    private int num;
+    private int lineNumber;
 
-    public Line(String line, Scope parent, int num) {
-        this.parent = parent;
-        this.line = line;
-        this.num=num;
-        this.execute();
-    }
+	/**
+	 * Constructor
+	 * @param line line's text
+	 * @param parent the scope contains this line
+	 * @param lineNumber current line's number
+	 */
+	public Line(String line, Scope parent, int lineNumber) {
+		this.parent = parent;
+		this.line = line;
+		this.lineNumber = lineNumber;
+		this.execute();
+	}
+
+	/**
+	 * Constructor
+	 * @param line line's text
+	 * @param parent the scope contains this line
+	 */
+	public Line(String line, Scope parent) {
+		this.parent = parent;
+		this.line = line;
+		this.lineNumber = parent.getMainScope().getLineNumber();
+		this.execute();
+	}
 
     private void validate() throws CodeException 
     {
     	String type = roughSort(this.line);
     	switch (type) {
 		case "INVALID":
-			throw new CodeException("line "+this.num+" did not pass the first rough sort");
+			throw new CodeException("line "+this.lineNumber +" did not pass the first rough sort");
 		case "OPEN":
 			if (!this.validateOpener())
 			{
-				throw new CodeException("line "+this.num+" was"
+				throw new CodeException("line "+this.lineNumber +" was"
 						+ " iterperted as block opener but wasn't in the right template");
 			}
 			break;
 /*		case "CLOSE":
 			if (this.parent.getOpenedScopes()<1)
 			{
-				throw new CodeException("line "+this.num+" was interperted as a block closer,"
+				throw new CodeException("line "+this.lineNumber+" was interperted as a block closer,"
 						+ " but there were no open blocks");
 			}
 			break;*/
 		case "CODELINE":
 			if (!this.validateCodeLine())
 			{
-				throw new CodeException(" line "+ this.num+ " was"
+				throw new CodeException(" line "+ this.lineNumber + " was"
 						+ "interperted as a Standart codeline but wasn't in the right template");
 			}
 			break;
