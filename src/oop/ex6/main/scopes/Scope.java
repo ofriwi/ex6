@@ -14,29 +14,50 @@ import java.util.*;
 public abstract class Scope {
     Map<String, Variable> variables;
 
-    private Scope parent;
+    protected Scope parent;
 
     /**
      * Constructor
      * @param parent scope's parent
+     * @throws CodeException 
      */
-    public Scope(Scope parent) {
+    public Scope(Scope parent) throws CodeException {
         this.variables = new HashMap<>();
         this.parent = parent;
     }
 
+    
+    protected void runScope() throws  CodeException 
+    {
+    	try {
+    	Line line = new Line(this.getMainScope().next(), this);
+    	while (Line.updateDepth(line.toString())!=-1)
+    	{
+    		line = new Line(this.getMainScope().next(), this);
+    	}
+    	}
+    	catch (NoSuchElementException e)
+    	{
+    		throw new CodeException("a scope is not being closed");
+    	}
+    }
+    
     /**
      * Get all variables available in the scope
      * @return ArrayList of variables
      */
     public Map<String, Variable> getVariables() {
-        return mergeVariables(parent.getVariables(), variables);
+    	if (this.parent!=null)
+    	{
+    		return mergeVariables(parent.getVariables(), variables);
+    	}
+    	return this.variables;
     }
 
     /*
     Merge a list of variables from parent with self variables
      */
-    private Map<String, Variable> mergeVariables(Map<String, Variable> parentVariables,
+    protected Map<String, Variable> mergeVariables(Map<String, Variable> parentVariables,
                                                Map<String, Variable> selfVariables){
         if (parent != null) {
             // Create a merged list

@@ -18,8 +18,9 @@ public class MainScope extends Scope {
 
     /**
      * Constructor
+     * @throws CodeException 
      */
-    public MainScope(String[] linesText) {
+    public MainScope(String[] linesText) throws CodeException {
         super(null);
         methods = new HashMap<>();
         this.linesText = linesText;

@@ -3,6 +3,9 @@ package oop.ex6.main.buildingUnits;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import oop.ex6.main.scopes.Block;
+import oop.ex6.main.scopes.MainScope;
+import oop.ex6.main.scopes.Method;
 import oop.ex6.main.scopes.Scope;
 
 /**
@@ -21,11 +24,11 @@ public class Line {
      * @param parent     the scope contains this line
      * @param lineNumber current line's number
      */
-    public Line(String line, Scope parent, int lineNumber) {
+    public Line(String line, Scope parent, int lineNumber) throws CodeException {
         this.parent = parent;
         this.line = line;
-        this.lineNumber = lineNumber;
-        this.execute();
+        this.lineNumber = lineNumber-1;
+        this.validate();
     }
 
     /**
@@ -33,12 +36,13 @@ public class Line {
      *
      * @param line   line's text
      * @param parent the scope contains this line
+     * @throws CodeException 
      */
-    public Line(String line, Scope parent) {
+    public Line(String line, Scope parent) throws CodeException {
         this.parent = parent;
         this.line = line;
-        this.lineNumber = parent.getMainScope().getLineNumber();
-        this.execute();
+        this.lineNumber = parent.getMainScope().getLineNumber()-1;
+        this.validate();
     }
 
     private void validate() throws CodeException {
@@ -51,32 +55,102 @@ public class Line {
                     throw new CodeException("line " + this.lineNumber + " was"
                             + " iterperted as block opener but wasn't in the right template");
                 }
+                String openType = openerType(this.line);
+                if (openType.equals("IF") || openType.equals("WHILE"))
+                {
+                	new Block(this.parent);
+                }
+                else if (openType.equals("METHOD"))
+                {
+                	new Method(this.parent.getMainScope(),
+                			getMethodName(this.line), getMethodInput(this.line), getMethodInput(this.line), true);
+                }
                 break;
-/*		case "CLOSE":
-            if (this.parent.getOpenedScopes()<1)
+		case "CLOSE":
+         /*   if (this.parent.getOpenedScopes()<1)
 			{
 				throw new CodeException("line "+this.lineNumber+" was interperted as a block closer,"
 						+ " but there were no open blocks");
-			}
-			break;*/
+			}*/
+			//get out of scope
+			break;
             case "CODELINE":
                 if (!this.validateCodeLine()) {
                     throw new CodeException(" line " + this.lineNumber + " was"
-                            + "interperted as a Standart codeline but wasn't in the right template");
+                            + " interperted as a Standart codeline but wasn't in the right template");
+                }
+                if (this.isVarAssign(this.line))
+                {
+                	 Pattern varDeclare = Pattern.compile("^[\\s]*(final[\\s]+)?(int|double|String|char|boolean)"
+                             + "[\\s]+([^\\s]*)[\\s]*(|=[\\s]*[^\\s]+.*[\\s]*);[\\s]*");
+                     Matcher decMatch = varDeclare.matcher(this.line);
+                     decMatch.matches();
+                     boolean isFinal = (decMatch.group(1) != null);
+                     String varType = decMatch.group(2);
+                     String name = decMatch.group(3);
+                     boolean isAssigned = false;
+                     if (!decMatch.group(4).equals(""))
+                     {
+                    	 isAssigned=true;
+                     }
+                     this.createVariable(name, varType, isFinal, isAssigned);
                 }
                 break;
             default:
                 break;
         }
     }
+    
+    public static String getMethodName(String str) throws CodeException
+    {
+    	Pattern methodLine = Pattern.compile
+                ("^\\s*void\\s+([a-zA-Z]{1}[a-zA-Z0-9_]*)\\s*\\((.*)\\)\\s*\\{\\s*");
+    	Matcher methodMatch = methodLine.matcher(str);
+    	methodMatch.matches();
+    	try{
+    	return methodMatch.group(1);
+    	}
+    	catch (Exception e)
+    	{
+    		throw new CodeException("invalid method declaration");
+    	}
+    }
 
+    public static Variable[] getMethodInput(String str) throws CodeException
+    {
+    	Pattern methodLine = Pattern.compile
+                ("^\\s*void\\s+([a-zA-Z]{1}[a-zA-Z0-9_]*)\\s*\\((.*)\\)\\s*\\{\\s*");
+    	Matcher methodMatch = methodLine.matcher(str);
+    	methodMatch.matches();
+    	String[] paramList = methodMatch.group(2).split(",");
+    	Variable ret[] = new Variable[paramList.length];
+    	if (paramList.length==1 && paramList[0].equals(""))
+    	{
+    		return ret;
+    	}
+    	for (int i=0; i<ret.length; i++)
+    	{
+    		Pattern varDec = Pattern.compile("[\\s]*(int|double|String|boolean|char)[\\s]*([a-zA-Z0-9_]*)[\\s]*");
+    		Matcher varMatch = varDec.matcher(paramList[i]);
+    		varMatch.matches();
+    		try{
+    		ret[i]=new Variable(varMatch.group(2), varMatch.group(1), false, true/*probably change this*/);
+    		}
+    		catch (Exception e)
+    		{
+    			throw new CodeException("invalid method decleration");
+    		}
+    	}
+    	return ret;
+    }
+    
     private static String roughSort(String str) {
         Pattern empty = Pattern.compile("[\\s]*");
         Pattern comment = Pattern.compile("^\\/{2}.*$");
-        Pattern blockOpen = Pattern.compile("^[^\\/].*\\{$|\\{");
+        Pattern blockOpen = Pattern.compile("^[^\\/].*\\{[\\s]*");
         Pattern blockClose = Pattern.compile("^[\\s]*}[\\s]*$");
-        Pattern codeLine = Pattern.compile("^[^\\/].*;$|;");
-
+        Pattern codeLine = Pattern.compile("^[^\\/].*;[\\s]*$|;[\\s]*");
+//^[^\\/].*\\{$|\\{
         Matcher m = empty.matcher(str);
         if (m.matches()) {
             return "EMPTY";
@@ -100,7 +174,7 @@ public class Line {
             return "INVALID";
         }
     }
-
+    
     public static int updateDepth(String str) {
         String type = roughSort(str);
         switch (type) {
@@ -114,26 +188,41 @@ public class Line {
         }
     }
 
+    private static String openerType(String str)
+    {
+    	 Pattern ifLine = Pattern.compile("^\\s*if\\s+\\((.*)\\)\\s*\\{\\s*");
+         Pattern whileLine = Pattern.compile("^\\s*while\\s+\\((.*)\\)\\s*\\{\\s*");
+         Pattern methodLine = Pattern.compile
+                 ("^\\s*void\\s+([a-zA-Z]{1}[a-zA-Z0-9_]*)\\s*\\((.*)\\)\\s*\\{\\s*");
+         Matcher ifMatch = ifLine.matcher(str);
+         Matcher whileMatch = whileLine.matcher(str);
+         Matcher methodMatch = methodLine.matcher(str);
+         if (ifMatch.matches())
+         {return "IF";}
+         if (whileMatch.matches())
+         {return "WHILE";}
+         if (methodMatch.matches())
+         {return "METHOD";}
+         return "NONE";
+    }
+    
     private boolean validateOpener() {
-        Pattern ifLine = Pattern.compile("^\\s*if\\s+\\((.*)\\)\\s*\\{\\s*");
-        Pattern whileLine = Pattern.compile("^\\s*while\\s+\\((.*)\\)\\s*\\{\\s*");
+        Pattern ifLine = Pattern.compile("^\\s*if\\s*\\((.*)\\)\\s*\\{\\s*");
+        Pattern whileLine = Pattern.compile("^\\s*while\\s*\\((.*)\\)\\s*\\{\\s*");
         Pattern methodLine = Pattern.compile
-                ("^\\s*void\\s+([a-zA-Z]{1}[a-zA-Z0-9_]*)\\s*\\((\\.*)\\)\\s*\\{\\s*");
+                ("^\\s*void\\s+([a-zA-Z]{1}[a-zA-Z0-9_]*)\\s*\\((.*)\\)\\s*\\{\\s*");
         Matcher ifMatch = ifLine.matcher(this.line);
         Matcher whileMatch = whileLine.matcher(this.line);
         Matcher methodMatch = methodLine.matcher(this.line);
         if (ifMatch.matches()) {
-            ifMatch.find();
             String cond = ifMatch.group(1);
             return isCondition(cond);
         }
         if (whileMatch.matches()) {
-            whileMatch.find();
             String cond = whileMatch.group(1);
             return isCondition(cond);
         }
         if (methodMatch.matches() && this.parent.getMainScope() == this.parent) {
-            methodMatch.find();
             String declare = methodMatch.group(2);
             return isParameterList(declare);
         }
@@ -143,15 +232,12 @@ public class Line {
     private boolean validateCodeLine() {
         //complete this.
         return (this.isVarAssign(this.line) || this.isVarValueChange(this.line)
-                || this.isMethodCall(this.line) || this.isReturn(this.line));
+                || this.isMethodCall(this.line) || this.isReturn(this.line) ||
+                this.isMultipleVarAssign(this.line));
     }
 
-    private void execute() {
-
-    }
-
-    private void createVariable(String name, String type, boolean isFinal) {
-        this.parent.addVariable(new Variable(name, type, isFinal));
+    private void createVariable(String name, String type, boolean isFinal, boolean isAssigned) {
+        this.parent.addVariable(new Variable(name, type, isFinal, isAssigned));
     }
 
     private static boolean isValidVarName(String name) {
@@ -161,10 +247,10 @@ public class Line {
     }
 
     private boolean isValidVarValue(String type, String value) {
-        Pattern intVal = Pattern.compile("-?[0-9]+");
-        Pattern doubleVal = Pattern.compile("-?[0-9]+\\.?[0-9]*");
+        Pattern intVal = Pattern.compile("[\\s]*-?[0-9]+[\\s]*");
+        Pattern doubleVal = Pattern.compile("[\\s]*-?[0-9]+\\.?[0-9]*[\\s]*");
         Pattern StringVal = Pattern.compile("^\".*\"$");
-        Pattern booleanVal = Pattern.compile("true|false|-?[0-9]+\\.?[0-9]*");
+        Pattern booleanVal = Pattern.compile("[\\s]*(true|false|-?[0-9]+\\.?[0-9]*)[\\s]*");
         Pattern charVal = Pattern.compile("^\\'.\\'$");
         Matcher m;
         switch (type) {
@@ -189,7 +275,8 @@ public class Line {
         boolean goodVar;
         try {
             goodVar = (this.parent.isContainVariable(value) &&
-                    this.parent.getVariable(value).getType().equals(type));
+                    this.parent.getVariable(value).getType().equals(type) &&
+                    this.parent.getVariable(value).isAssigned());
         } catch (CodeException e) {
             goodVar = false;
         }
@@ -199,7 +286,7 @@ public class Line {
     private boolean isVarAssign(String str) {
         boolean isAssign = true;
         Pattern varDeclare = Pattern.compile("^[\\s]*(final[\\s]+)?(int|double|String|char|boolean)"
-                + "[\\s]+([^\\s]*)[\\s]*(|=[\\s]*[^\\s]+.*[\\s]*);[\\s]*");
+                + "[\\s]+([^\\s=]+)[\\s]*(|=[\\s]*[^\\s]+.*[\\s]*);[\\s]*");
         Matcher decMatch = varDeclare.matcher(str);
         if (!decMatch.matches()) {
             return false;
@@ -209,10 +296,10 @@ public class Line {
         String name = decMatch.group(3);
         String value = "";
         if (!decMatch.group(4).equals("")) {
-            Pattern getVal = Pattern.compile("=[\\s]*([^\\s]+.*[^\\s]+)[\\s]*");
+            Pattern getVal = Pattern.compile("=[\\s]*([^\\s]*.*[^\\s]+)[\\s]*");
             Matcher valMatch = getVal.matcher(decMatch.group(4));
             valMatch.find();
-            value = valMatch.group(2);
+            value = valMatch.group(1);
         } else {
             isAssign = false;
         }
@@ -229,19 +316,35 @@ public class Line {
         if (!isAssign && isFinal) {
             return false;
         }
+        if (this.parent.isContainVariable(name) && !this.parent.getMainScope().isContainVariable(name))
+        {
+        	return false;
+        }
         return true;
     }
 
     private static boolean isParameterList(String str) {
         String[] paramList = str.split(",");
+        String[] nameList = new String[paramList.length];
+        int count=0;
         Pattern varDeclare = Pattern.compile(
                 "\\s*(int|double|String|boolean|char)\\s+([a-zA-Z]{1}[a-zA-Z0-9_]*|[_][a-zA-Z0-9_]+)\\s*");
         for (String i : paramList) {
             Matcher declareMatch = varDeclare.matcher(i);
             if (declareMatch.matches()) {
-                break;
+            	for (String j : nameList)
+            	{
+            		if (j!=null && j.equals(declareMatch.group(2)))
+            		{return false;}
+            	}
+                nameList[count]=declareMatch.group(2);
+                count++;
+         //   	break;
             }
-            return false;
+            else if(i.equals(""))
+            {break;}
+            else
+            {return false;}
         }
         return true;
     }
@@ -257,15 +360,24 @@ public class Line {
             Matcher num = numCond.matcher(i);
             Matcher var = varCond.matcher(i);
             if (lit.matches()) {
-                break;
+                continue;
             }
             if (num.matches()) {
-                break;
+                continue;
             }
             if (var.matches()) {
                 String varName = var.group(1);
                 if (this.parent.isContainVariable(varName)) {
-                    break;
+                	String type;
+                	boolean isAssigned;
+                	try {
+						type = this.parent.getVariable(varName).getType();
+						isAssigned=this.parent.getVariable(varName).isAssigned();
+					} catch (CodeException e) {
+						return false;
+					}
+                	if ((type.equals("int")||type.equals("double")||type.equals("boolean"))&&isAssigned)
+                    {continue;}
                 }
             }
             return false;
@@ -275,7 +387,7 @@ public class Line {
     }
 
     private boolean isVarValueChange(String str) {
-        Pattern varChange = Pattern.compile("[\\s]*([^\\s]+)[\\s]*=[\\s]*([^\\s].*[^\\s])[\\s]*;[\\s]*");
+        Pattern varChange = Pattern.compile("[\\s]*([^\\s]+)[\\s]*=[\\s]*([^\\s].*[^\\s]*)[\\s]*;[\\s]*");
         Matcher match = varChange.matcher(str);
         if (!match.matches()) {
             return false;
@@ -316,7 +428,9 @@ public class Line {
                 return false;
             }
             for (int i = 0; i < input.length; i++) {
-                if (!this.isValidVarValue(input[i].getType(), varList[i])) {
+                if (input[i]==null)
+                {break;}
+            	if (!this.isValidVarValue(input[i].getType(), varList[i])) {
                     return false;
                 }
             }
@@ -335,4 +449,32 @@ public class Line {
         return retMatch.matches();
     }
 
+    private boolean isMultipleVarAssign(String str)
+    {
+    	Pattern varsGetter = Pattern.compile
+    			("[\\s]*(int|double|String|boolean|char)[\\s]+(.*)[\\s]*;[\\s]*");
+    	Matcher getVars = varsGetter.matcher(str);
+    	if (!getVars.matches())
+    	{
+    		return false;
+    	}
+    	String type = getVars.group(1);
+    	String vars = getVars.group(2);
+    	String[] varsArr = vars.split(",");
+    	for (int i=0; i<varsArr.length; i++)
+    	{
+    		if (!this.isVarAssign(type+" "+varsArr[i]+";"))
+    		{
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    @Override
+    public String toString()
+    {
+    	return this.line;
+    }
+    
 }

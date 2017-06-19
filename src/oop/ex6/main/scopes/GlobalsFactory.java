@@ -30,9 +30,18 @@ public class GlobalsFactory {
 
             if(scopeDepth == 0){
                 new Line(lineText, mainScope, lineIndex);
-            }else if(scopeDepth < 0){
+            }
+            else if (Line.updateDepth(lineText)==1 && scopeDepth==1)
+            {
+            	Method method = new Method(mainScope, Line.getMethodName(lineText),
+            			Line.getMethodInput(lineText), Line.getMethodInput(lineText), false);
+            	mainScope.addMethod(method);
+            }
+            else if(scopeDepth < 0){
                 throw new CodeException("Code structure invalid - too many \'}\'s");
             }
         }
     }
+    
+
 }

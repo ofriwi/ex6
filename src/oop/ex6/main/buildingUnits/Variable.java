@@ -29,11 +29,13 @@ public class Variable {
     private String type;
     private String name;
     private boolean isFinal;
+    private boolean isAssigned;
 
-    public Variable(String name, String type, boolean isFinal) {
+    public Variable(String name, String type, boolean isFinal, boolean isAssigned) {
         this.type = type;
         this.name = name;
         this.isFinal = isFinal;
+        this.isAssigned=isAssigned;
     }
 
     /**
@@ -55,5 +57,9 @@ public class Variable {
     public boolean isFinal()
     {
     	return this.isFinal;
+    }
+    public boolean isAssigned()
+    {
+    	return this.isAssigned;
     }
 }

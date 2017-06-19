@@ -1,5 +1,6 @@
 package oop.ex6.main.scopes;
 
+import oop.ex6.main.buildingUnits.CodeException;
 import oop.ex6.main.buildingUnits.Variable;
 
 import java.io.ObjectInputStream.GetField;
@@ -19,17 +20,26 @@ public class Method extends Scope {
      * @param mainScope the MainScope
      * @param name Method's name
      * @param variables Method input's variables
+     * @throws CodeException 
      */
-    public Method(Scope mainScope, String name, Variable[] variables, Variable[] input) {
+    public Method(Scope mainScope, String name, Variable[] variables, Variable[] input, boolean toRun) throws CodeException {
         super(mainScope);
         this.name = name;
         this.input=input;
-        if (variables != null) {
+        if (variables[0] != null) {
             for (Variable variable : variables) {
-                this.variables.put(variable.getName(), variable);
+                if (variable!= null)
+                {
+                	this.addVariable(variable);;
+                }
             }
         }
+        this.getVariables();
+        if (toRun)
+        {this.runScope();}
     }
+    
+    
 
     /**
      * Getter
