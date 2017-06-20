@@ -1,4 +1,4 @@
-public main(){
-    sadasd
-}}
+void main(){
+    int x=1;
 }
+int x=0;

@@ -12,14 +12,14 @@ import java.util.*;
  * method or a block (if or while).
  */
 public abstract class Scope {
-    Map<String, Variable> variables;
+    private Map<String, Variable> variables;
 
-    protected Scope parent;
+    private Scope parent;
 
     /**
      * Constructor
      * @param parent scope's parent
-     * @throws CodeException 
+     * @throws CodeException if scope is invalid
      */
     public Scope(Scope parent) throws CodeException {
         this.variables = new HashMap<>();
@@ -27,14 +27,14 @@ public abstract class Scope {
     }
 
     
-    protected void runScope() throws  CodeException 
+    protected void runScope() throws  CodeException
     {
     	try {
-    	Line line = new Line(this.getMainScope().next(), this);
-    	while (Line.updateDepth(line.toString())!=-1)
-    	{
-    		line = new Line(this.getMainScope().next(), this);
-    	}
+            Line line = new Line(this.getMainScope().next(), this);
+            while (Line.updateDepth(line.toString())!=-1)
+            {
+                line = new Line(this.getMainScope().next(), this);
+            }
     	}
     	catch (NoSuchElementException e)
     	{
@@ -57,7 +57,7 @@ public abstract class Scope {
     /*
     Merge a list of variables from parent with self variables
      */
-    protected Map<String, Variable> mergeVariables(Map<String, Variable> parentVariables,
+    private Map<String, Variable> mergeVariables(Map<String, Variable> parentVariables,
                                                Map<String, Variable> selfVariables){
         if (parent != null) {
             // Create a merged list
@@ -83,16 +83,6 @@ public abstract class Scope {
     public boolean isContainVariable(String name){
         return variables.keySet().contains(name);
     }
-
-    /* DEBUG TODO REMOVE
-     * Run the method
-     * @throws CodeException if one of the lines throws an error
-     /
-    public void excecute() throws  CodeException{
-        for (String lineText : lines){
-            Line line = new Line(lineText);
-        }
-    }  */
 
     /**
      * Add a variable

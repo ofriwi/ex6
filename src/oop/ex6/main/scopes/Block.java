@@ -22,7 +22,6 @@ public class Block extends Scope {
     public Block(Scope parent,  Map<Integer, Block> blocks) throws CodeException {
         super(parent);
         this.blocks=blocks;
-       // this.mergeVariables(this.parent.getVariables(), this.getVariables());
         this.getVariables();
         super.runScope();
     }
