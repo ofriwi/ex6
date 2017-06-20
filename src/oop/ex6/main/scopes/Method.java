@@ -20,7 +20,7 @@ public class Method extends Scope {
      * @param mainScope the MainScope
      * @param name Method's name
      * @param variables Method input's variables
-     * @throws CodeException 
+     * @throws CodeException if Method's code is invalid
      */
     public Method(Scope mainScope, String name, Variable[] variables, Variable[] input, boolean toRun) throws CodeException {
         super(mainScope);
@@ -30,7 +30,7 @@ public class Method extends Scope {
             for (Variable variable : variables) {
                 if (variable!= null)
                 {
-                	this.addVariable(variable);;
+                	this.addVariable(variable);
                 }
             }
         }
@@ -38,8 +38,6 @@ public class Method extends Scope {
         if (toRun)
         {this.runScope();}
     }
-    
-    
 
     /**
      * Getter
@@ -48,7 +46,11 @@ public class Method extends Scope {
     public String getName() {
         return name;
     }
-    
+
+    /**
+     * Get input variables as Variable[].
+     * @return Variable Array of input arguments.
+     */
     public Variable[] getinput()
     {
     	return this.input;

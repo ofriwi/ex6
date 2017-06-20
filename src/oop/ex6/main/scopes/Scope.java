@@ -18,6 +18,7 @@ public abstract class Scope {
 
     /**
      * Constructor
+     *
      * @param parent scope's parent
      * @throws CodeException if scope is invalid
      */
@@ -26,39 +27,38 @@ public abstract class Scope {
         this.parent = parent;
     }
 
-    
-    protected void runScope() throws  CodeException
-    {
-    	try {
+    /**
+     * Run the scope.
+     * @throws CodeException if the scope's code is invalid.
+     */
+    protected void runScope() throws CodeException {
+        try {
             Line line = new Line(this.getMainScope().next(), this);
-            while (Line.updateDepth(line.toString())!=-1)
-            {
+            while (Line.updateDepth(line.toString()) != -1) {
                 line = new Line(this.getMainScope().next(), this);
             }
-    	}
-    	catch (NoSuchElementException e)
-    	{
-    		throw new CodeException("a scope is not being closed");
-    	}
+        } catch (NoSuchElementException e) {
+            throw new CodeException("a scope is not being closed");
+        }
     }
-    
+
     /**
      * Get all variables available in the scope
+     *
      * @return ArrayList of variables
      */
     public Map<String, Variable> getVariables() {
-    	if (this.parent!=null)
-    	{
-    		return mergeVariables(parent.getVariables(), variables);
-    	}
-    	return this.variables;
+        if (this.parent != null) {
+            return mergeVariables(parent.getVariables(), variables);
+        }
+        return this.variables;
     }
 
     /*
     Merge a list of variables from parent with self variables
      */
     private Map<String, Variable> mergeVariables(Map<String, Variable> parentVariables,
-                                               Map<String, Variable> selfVariables){
+                                                 Map<String, Variable> selfVariables) {
         if (parent != null) {
             // Create a merged list
             Map<String, Variable> merged = new HashMap<>(selfVariables);
@@ -70,22 +70,24 @@ public abstract class Scope {
                 }
             }
             return merged;
-        }else{
+        } else {
             return selfVariables;
         }
     }
 
     /**
      * Check if a variable with this name is defined in the scope
+     *
      * @param name Variable's name
      * @return True if variable defined
      */
-    public boolean isContainVariable(String name){
+    public boolean isContainVariable(String name) {
         return variables.keySet().contains(name);
     }
 
     /**
      * Add a variable
+     *
      * @param variable variable to add
      */
     public void addVariable(Variable variable) {
@@ -94,26 +96,28 @@ public abstract class Scope {
 
     /**
      * Get the main scope
+     *
      * @return MainScope object
      */
-    public MainScope getMainScope(){
+    public MainScope getMainScope() {
         Scope scope = this;
-        while(scope.parent != null)
+        while (scope.parent != null)
             scope = scope.parent;
-        return (MainScope)(scope);
+        return (MainScope) (scope);
     }
 
     /**
      * Return a variable with certain name
+     *
      * @param name Variable's name
      * @return Variable object
      * @throws CodeException if variable doesn't exists
      */
-    public Variable getVariable(String name) throws CodeException{
+    public Variable getVariable(String name) throws CodeException {
         Variable variable = getVariables().get(name);
         if (variable == null) {
             throw new CodeException("");
-        }else {
+        } else {
             return variable;
         }
     }

@@ -17,7 +17,7 @@ public class Block extends Scope {
     /**
      * Constructor
      * @param parent block's parent
-     * @throws CodeException 
+     * @throws CodeException if block's code is invalid.
      */
     public Block(Scope parent,  Map<Integer, Block> blocks) throws CodeException {
         super(parent);
@@ -25,14 +25,23 @@ public class Block extends Scope {
         this.getVariables();
         super.runScope();
     }
-    
+
+    /**
+     * Constructor
+     * @param parent Block's parent
+     * @throws CodeException if block's code is invalid
+     */
     public Block(Scope parent) throws CodeException {
         super(parent);
         this.blocks= Collections.emptyMap();
         this.getVariables();
         this.runScope();
     }
-    
+
+    /**
+     * Get the type of the scope - a block - as String.
+     * @return "Block"
+     */
     public String getScopeType()
     {
     	return "Block";

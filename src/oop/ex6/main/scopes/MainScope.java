@@ -18,7 +18,7 @@ public class MainScope extends Scope {
 
     /**
      * Constructor
-     * @throws CodeException 
+     * @throws CodeException  if Scope's code is invalid
      */
     public MainScope(String[] linesText) throws CodeException {
         super(null);

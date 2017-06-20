@@ -1,0 +1,86 @@
+ofriwi
+tomer.shani <<<<<<<<<<<<<<<<<<<<<<<SHANOS VALIDATE>>>>>>>>>>>>>>>>>>>>>>>
+
+Sjavac: This is the main class. This class runs the main flow.
+        The flow of the program is:
+        1. Create a string array with all the lines.
+        2. Create methods and global variables.
+        3. Validate all the lines:
+            3a. Validate the line.
+            3b. If line is a block (if/while) create a Block object and:
+                3b-1.Validate all lines in the block.
+        4.  If a IOException is thrown, return 2.
+            If a CodeException is thrown return 1.
+            If no Exception is thrown return 0.
+
+SjavacToStringArr: Convert the file to string array of lines.
+
+scopes package: 1. Scope: Scope is a abstract class represents a scope in the code. It has it's own variables,
+                and it can access it's parent scope's variables and methods.
+                --> Block: if/while block
+                --> MainScope: All the javac file. It has a list of Methods, and a list of lines.
+                                It has a public next() method that runs the code as iterator.
+                --> Method: a method in the code
+                2. GlobalFactory: This class has static method that initializes all the globals (variables
+                and methods) in the code to MainScope object.
+buildingUnits package: This package contains all the 'building units' of the code - Lines, Variables and
+                Exceptions.
+                1. CodeException: This class is an exception represents an error in the code.
+                2. Line: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<SHANOS describe Line>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                3. Variable: This class represents a variable. It has type, name and booleans that saves
+                    its state.
+
+
+Design Decisions:   1. A CodeException class gave us the option to add a try block around the main flow, and
+                        understand when an error is a code error and when it's a IO error.
+                    2. Using MainScope as iterator. This usage gave us the option to hold in memory only
+                        the instance of MainScope, and then every time we called it, it gave the next line.
+                         So when inside a different scope, we could call the next line without the need to
+                         store each scope first and laast line.
+                    3. Semi-Linear progression through code. We considered 3 alternatives to the program's
+                        flow. 1 - Analyze line by line, 2 - Analyze all method in parallel, 3 - The
+                        semi-linear, first we saved all the methods to memory and then inside each method we
+                        analyzed it line after line. We chose option 3 because that way we analyzed the
+                        globals before the method started running, but we didn't have to store any
+                        information about the lines that are not Variable or Method declaration.
+                        In other words we validated a line, and if it was OK we forgot it and didn't have
+                        to store it.
+                    4. Analyzing all String in one class. We only used Line object to analyze Strings
+                        (using regex) to maintain a readable and clean code.
+                    5. We used HashMaps to store Variables and Methods. It let us the possibillity to
+                        access to methods and variables by name easily.
+
+Answers to Questions:
+    6.1. Error Handling - We created a CodeException object. When a code error is detected anywhere in the
+    code, it throws an error up to the main. The main catches the error and print 1 to the screen. If we
+    weren't use the CodeException object, we were not able to tell the difference between an IO exception
+    and a Code exception, and we had to run more checks.
+    6.2. OO Design
+        a. We described above the classes and the Object Oriented design of the project.
+        b. Our thinking progress - We payed attention that the code as hirerchial structure. The MainScope
+             has some Methods inside, and each Method has some Blocks that can also contain other Blocks and
+             so on. We saw that all of those Scopes share some common behaviour, and that each one could
+             access {only} it's parent's variables and all MainScope's methods.
+               So we created a Scope abstract object, that inherits to MainScope, Method and Block. Each one
+             has a set of Variables and a pointer to it's parent Scope (while MainScope has a null pointer
+             to indicate that it is the MainScope). Each scope also has a method that returns a list of the
+             union of it's Vars with it's parent Vars, that gives priority to the child's Vars.
+               We also thought that the code is built from lines that we have to validate, so we created
+             Line class, and variables we had to save, so we created Variable class (as described above).
+        c. Alternatives - an alternative could be pre-analyzing the code, and save each Scope first and
+            last line. Than create a list of variables, each time a variable is initialized we save the
+            initialization line and when we reach the line that ends it's scope, we remove this variable
+            from the list.
+            This alternative isn't using the Object Oriented Principle, and some of it's cons are that we
+            have to store lots of information and to handle it manually, instead of letting Java's classes
+            encapsulation handle it.
+        d. Adding some features:
+            - Classes: If we'd want to add classes, we would have to add a new class to our project: Class,
+            that inherit from Scope and has a list of Methods. and we had to change the list of Methods in
+            MainScope to list of Classes. Than we would pre-analyze all the classes, and then run on
+            MainScope line by line as in our solution.
+            - Standard Java Methods: If we'd like to use standard java methods, we would have to add a
+            function to MainScope that adds all Java's Standard Methods and their arguments to the methods
+            list, and call it from MainScope's constructor. Then, each time a standard method is called our
+             validator would treat it has a defined function.
+    6.3 RegEx - <<<<<<<<<<<<<<<<<<<<<SHANOS answer q. 6.3 from pdf>>>>>>>>>>>>>>>>>>>>>
