@@ -45,6 +45,11 @@ public class Line {
         this.validate();
     }
 
+    /**
+     * a private method which reads the line, classifies it, updates the variables according to it
+     * and throws CodeException if the Line is illegal (either in it's syntax or attempted actions) 
+     * @throws CodeException if the line is illegal
+     */
     private void validate() throws CodeException {
         String type = roughSort(this.line);
         switch (type) {
@@ -66,14 +71,6 @@ public class Line {
                 			getMethodName(this.line), getMethodInput(this.line), getMethodInput(this.line), true);
                 }
                 break;
-		case "CLOSE":
-         /*   if (this.parent.getOpenedScopes()<1)
-			{
-				throw new CodeException("line "+this.lineNumber+" was interperted as a block closer,"
-						+ " but there were no open blocks");
-			}*/
-			//get out of scope
-			break;
             case "CODELINE":
                 if (!this.validateCodeLine()) {
                     throw new CodeException(" line " + this.lineNumber + " was"
@@ -101,6 +98,12 @@ public class Line {
         }
     }
     
+    /**
+     * static method returns a method's name of a method decleration line using regex
+     * @param str - the given line
+     * @return the declared method's name
+     * @throws CodeException if the syntax is wrong.
+     */
     public static String getMethodName(String str) throws CodeException
     {
     	Pattern methodLine = Pattern.compile
@@ -116,6 +119,12 @@ public class Line {
     	}
     }
 
+    /**
+     * static method returns a method's needed input of a method decleration line using regex
+     * @param str - the given line
+     * @return the declared method's needed input
+     * @throws CodeException if the syntax is wrong.
+     */
     public static Variable[] getMethodInput(String str) throws CodeException
     {
     	Pattern methodLine = Pattern.compile
@@ -144,6 +153,13 @@ public class Line {
     	return ret;
     }
     
+    /**
+     * static method roughly sorting a given String using it's prefix and suffix
+     * @param str - the given line
+     * @return 'EMPTY' if the line matches empty line, 'COMMENT' if the line matches comment line
+     * 'OPEN' if the line matches scope opener, 'CLOSE' if the line matches scope closer
+     * 'CODELINE' if the line matches normal codeline (if it ends with ';'), 'INVALID' otherwise
+     */
     private static String roughSort(String str) {
         Pattern empty = Pattern.compile("[\\s]*");
         Pattern comment = Pattern.compile("^\\/{2}.*$");
@@ -175,6 +191,11 @@ public class Line {
         }
     }
     
+    /**
+     * help-function returning an indicator for scope openers and closers
+     * @param str - the given line
+     * @return 1 if the pattern matches line-opener, -1 if the pattern matches line-closer, 0 otherwise
+     */
     public static int updateDepth(String str) {
         String type = roughSort(str);
         switch (type) {
@@ -188,6 +209,12 @@ public class Line {
         }
     }
 
+    /**
+     * static method which classifies a scope opener type using regex
+     * @param str - the given line
+     * @return 'IF' if pattern matches if declaration, 'WHILE' if pattern matches while declaration
+     * 'METHOD' if pattern matches method declaration, 'NONE' otherwise.
+     */
     private static String openerType(String str)
     {
     	 Pattern ifLine = Pattern.compile("^\\s*if\\s+\\((.*)\\)\\s*\\{\\s*");
@@ -206,6 +233,10 @@ public class Line {
          return "NONE";
     }
     
+    /**
+     * checks if an opener type's syntax is valid
+     * @return true if valid, false otherwise
+     */
     private boolean validateOpener() {
         Pattern ifLine = Pattern.compile("^\\s*if\\s*\\((.*)\\)\\s*\\{\\s*");
         Pattern whileLine = Pattern.compile("^\\s*while\\s*\\((.*)\\)\\s*\\{\\s*");
@@ -229,23 +260,44 @@ public class Line {
         return false;
     }
 
+    /**
+     * checks if a standard codeline type's syntax is valid
+     * @return true if valid, false otherwise
+     */
     private boolean validateCodeLine() {
-        //complete this.
         return (this.isVarAssign(this.line) || this.isVarValueChange(this.line)
                 || this.isMethodCall(this.line) || this.isReturn(this.line) ||
                 this.isMultipleVarAssign(this.line));
     }
 
+    /**
+     * creates a new variable using the given parameters
+     * @param name - the variable's name
+     * @param type - the variable's type
+     * @param isFinal - a boolean representing weither the variable is final
+     * @param isAssigned - a boolean representing weither the variable is assigned
+     */
     private void createVariable(String name, String type, boolean isFinal, boolean isAssigned) {
         this.parent.addVariable(new Variable(name, type, isFinal, isAssigned));
     }
 
+    /**
+     * a method checking if a given String is a valid variable name
+     * @param name-the given String
+     * @return true if name is a valid variable name, false otherwise
+     */
     private static boolean isValidVarName(String name) {
         Pattern varName = Pattern.compile("([a-zA-Z]{1}[a-zA-Z0-9_]*|[_][a-zA-Z0-9_]+)");
         Matcher vaMatch = varName.matcher(name);
         return (vaMatch.matches());
     }
 
+    /**
+     * a method varifing if a given variable's value is valid and compatable with it's type
+     * @param type - the variable's type
+     * @param value - the variable value
+     * @return true if the value is legal, false otherwise.
+     */
     private boolean isValidVarValue(String type, String value) {
         Pattern intVal = Pattern.compile("[\\s]*-?[0-9]+[\\s]*");
         Pattern doubleVal = Pattern.compile("[\\s]*-?[0-9]+\\.?[0-9]*[\\s]*");
@@ -283,6 +335,11 @@ public class Line {
         return (m.matches() || goodVar);
     }
 
+    /**
+     * a method checking if a given line is a legal variable assignment
+     * @param str - the given line
+     * @return - true if the line is legal variable assignment, false otherwise
+     */
     private boolean isVarAssign(String str) {
         boolean isAssign = true;
         Pattern varDeclare = Pattern.compile("^[\\s]*(final[\\s]+)?(int|double|String|char|boolean)"
@@ -323,6 +380,11 @@ public class Line {
         return true;
     }
 
+    /**
+     * a static method checking if a given String is a valid list of parameters
+     * @param str - the given String
+     * @return true if the String is a valid list of parameters, false otherwise 
+     */
     private static boolean isParameterList(String str) {
         String[] paramList = str.split(",");
         String[] nameList = new String[paramList.length];
@@ -349,6 +411,11 @@ public class Line {
         return true;
     }
 
+    /**
+     * a static method checking if a given String is a valid condition expression
+     * @param str - the given String
+     * @return true if the String is a valid condition expression, false otherwise 
+     */
     private boolean isCondition(String str) {
         String[] sepCond = str.split("\\|\\||&&");
         Pattern literalCond = Pattern.compile("\\s*(true|false)\\s*");
@@ -386,6 +453,11 @@ public class Line {
 
     }
 
+    /**
+     * a method checking if a given line is a legal variable value change
+     * @param str - the given line
+     * @return - true if the line is legal value change, false otherwise
+     */
     private boolean isVarValueChange(String str) {
         Pattern varChange = Pattern.compile("[\\s]*([^\\s]+)[\\s]*=[\\s]*([^\\s].*[^\\s]*)[\\s]*;[\\s]*");
         Matcher match = varChange.matcher(str);
@@ -397,7 +469,7 @@ public class Line {
         if (!this.parent.isContainVariable(name)) {
             return false;
         }
-        try // never throws exception
+        try
         {
             if (!this.isValidVarValue(this.parent.getVariable(name).getType(), value)) {
                 return false;
@@ -412,6 +484,11 @@ public class Line {
 
     }
 
+    /**
+     * a method checking if a given line is a legal method call
+     * @param str - the given line
+     * @return - true if the line is legal method call, false otherwise
+     */
     private boolean isMethodCall(String str) {
         Pattern methodCall = Pattern.compile("[\\s]*([^\\s]*)[\\s]*\\((.*)\\)[\\s]*;[\\s]*");
         Matcher callMatcher = methodCall.matcher(str);
@@ -435,7 +512,7 @@ public class Line {
                 }
             }
             return true;
-        } // never throws exceptions
+        }
         catch (CodeException e) {
             return false;
         }
@@ -443,12 +520,22 @@ public class Line {
 
     }
 
+    /**
+     * a method checking if a given line is a legal return statement
+     * @param str - the given line
+     * @return - true if the line is legal return statement, false otherwise
+     */
     private boolean isReturn(String str) {
         Pattern ret = Pattern.compile("^[\\s]*return[\\s]*;[\\s]*$");
         Matcher retMatch = ret.matcher(str);
         return retMatch.matches();
     }
 
+    /**
+     * a method checking if a given line is a legal assignment of several variables
+     * @param str - the given line
+     * @return - true if the line is legal assignment of several variables, false otherwise
+     */
     private boolean isMultipleVarAssign(String str)
     {
     	Pattern varsGetter = Pattern.compile
@@ -471,6 +558,10 @@ public class Line {
     	return true;
     }
     
+    /**
+     * toString method
+     * @return - the line's text string.
+     */
     @Override
     public String toString()
     {

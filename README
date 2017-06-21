@@ -1,5 +1,5 @@
 ofriwi
-tomer.shani <<<<<<<<<<<<<<<<<<<<<<<SHANOS VALIDATE>>>>>>>>>>>>>>>>>>>>>>>
+tomer.shani
 
 Sjavac: This is the main class. This class runs the main flow.
         The flow of the program is:
@@ -26,7 +26,9 @@ scopes package: 1. Scope: Scope is a abstract class represents a scope in the co
 buildingUnits package: This package contains all the 'building units' of the code - Lines, Variables and
                 Exceptions.
                 1. CodeException: This class is an exception represents an error in the code.
-                2. Line: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<SHANOS describe Line>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                2. Line: This class represents a line. It has a text, a number and a parent scope. in
+                		 This class the validating of lines and the creation and assignments of
+                		 Variables are being done.
                 3. Variable: This class represents a variable. It has type, name and booleans that saves
                     its state.
 
@@ -83,4 +85,19 @@ Answers to Questions:
             function to MainScope that adds all Java's Standard Methods and their arguments to the methods
             list, and call it from MainScope's constructor. Then, each time a standard method is called our
              validator would treat it has a defined function.
-    6.3 RegEx - <<<<<<<<<<<<<<<<<<<<<SHANOS answer q. 6.3 from pdf>>>>>>>>>>>>>>>>>>>>>
+    6.3 RegEx - one of the main regular expressions we used is:
+    			^\\s*void\\s+([a-zA-Z]{1}[a-zA-Z0-9_]*)\\s*\\((.*)\\)\\s*\\{\\s*
+    			this regex is used to check if a line is a method decleration and get the method name 
+    			and input string.
+    			such line has to start with any amount of whitespaces, and then the word 'void' and at least
+    			one whitespace. after this, it should have a method's name (which is saved as a group) and
+    			then any number of whitespaces and an input string inside normal parentheses 
+    			(which is saved as a group), and finally, a '{' with any number of white spaces
+    			on both sides.
+    			
+    			another main regex in our code is:
+    			([a-zA-Z]{1}[a-zA-Z0-9_]*|[_][a-zA-Z0-9_]+)
+    			this regex is used to check if a string is a valid variable name.
+    			such name is either a letter followed by any number (including 0) letters, numbers and
+    			underscores, or an underscore followed by any positive number (not including 0) of
+    			letters, numbers and underscores. 
